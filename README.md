@@ -1,1 +1,1 @@
-# intellegent_moving
+# intelligent_moving
