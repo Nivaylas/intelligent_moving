@@ -11,8 +11,6 @@ int shuffled = {2, 4, 5, 1, 3};
 int QTIState;
 
 void motor(int left, int right,int times){
-    int leftMotorDelay = 1500 + left;
-    int rightMotorDelay = 1500 - right;
     for(int i = 1; i <= times; i++){
         digitalWrite(LMOTOR, HIGH);
         delayMicroseconds(right);
@@ -28,14 +26,24 @@ void QTI(){
     QTIState = digitalRead(QTI1) * 8 +
                digitalRead(QTI2) * 4 +
                digitalRead(QTI3) * 2 +
-               digitalRead(QTI4);
+               digitalRead(QTI4);//查询qti传感器状态
     //Serial.println((int)QTIState)
-    switch(QTIState){
+    switch(QTIState){//选择qti传感器状态
         case 1:
-            motor(1650, 1600);//TURN RIGHT
+            motor(1650, 1600);//向右转
             break;
         case 3:
-            motor(1510, 1550);//TURN A BIT RIGHT
+            motor(1510, 1550);//小幅向右转
+            break;
+        case 8:
+            turn(1400,1450);//向左转
+            break;
+        case 12:
+            turn(1450,1490);//小幅向左转
+            break;
+        case 15:
+            fastForward(1);//
+            break;
     }
 }
 
