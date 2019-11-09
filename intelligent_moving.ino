@@ -161,8 +161,8 @@ void loop(){
     2：校正角度
     */
     startToCenter();
-    move_A();
-    delay(1000);
+    move(1);
+    /*delay(1000);
     move_B();
     delay(1000);
     move_C();
@@ -171,7 +171,27 @@ void loop(){
     delay(1000);
     move_E();
     delay(1000);
+    */
+}
 
+void move(int goal){
+    switch (goal)
+    {
+    case 1:
+        move_A();
+    break;
+    case 2:
+        move_B();
+    break;
+    case 3:
+        move_C();
+    break;
+    case 4:
+        move_D();
+    break;
+    case 5:
+        move_E();
+    break;
 }
 
 
@@ -184,14 +204,14 @@ void move_A(){
     }
     frontServo(1);//前伺服夹住
     switch(shuffled[1]){
-    case 1://A点放置色块位黄色
+    case 1://A点放置色块为黄色
         Forward(7);//盲走一小段距离，QTI越过白圈
         for(int i = 1; i <= 68; i++)//循线，将物块推至得分点       
             QTI();
         frontServo(0);//前伺服松开
         Back(20);//后退一段，将车身前面的叉子抽出，避免碰到色块
         //返回
-        while(QTISt     ate != 0)//检测是否到白点
+        while(QTIState != 0)//检测是否到白点
             QTI(-1);
         while(QTIState != 15)//检测是否到中心点
             QTI(-1);
@@ -200,20 +220,20 @@ void move_A(){
         rightDetect();//右转检测函数，保证中间QTI至少有一个在直线上
         delay(1000);
         buttOccupied = false;//屁股没色块
+        move_B();
         break;
-    case 2://A点放置色块位白色
+    case 2://A点放置色块为白色
         while(QTIState != 15)//检测是否到中心点
             QTI(-1);
         Forward(15); //补偿
         turn_left_135();//屁股对着挡住路的色块
         leftDetect();
-        while(QTIState != 0){//检测是否到白点
+        while(QTIState != 0)//检测是否到白点
             QTI(-1);
-        }
         backServo(1);//后伺服夹住
         turn_back();//要放的色块转向前
         for(int i = 1; i <= 68; i++)//循线，将物块推至得分点       
-            QTI(-1);
+            QTI();
         frontServo(0);//前伺服松开
         back(20);//后退一段，将车身前面的叉子抽出，避免碰到色块  
         //返回
@@ -225,77 +245,79 @@ void move_A(){
         turn_right_45(); //向右旋转 45°
         rightDetect();
         buttOccupied = true;//屁股有色块
+        move(shuffled[2]);
         break;
-    case 3:                  //A点放置色块位红色，且C点没有色块
-            turn_back();      
-            zzjiance();
-            while(qtis!=15)  //检测是否到中心点
-            {qti();}
-            fastForward(15);
-            turn_left_90();
-            zzjiance();
-            while(qtis!=0)  //检测是否到白点
-            {qti();}
-            for(i=0;i<68;i++)       
-            {qti();}
-            back(20);
-            turn_back();
-            zzjiance();
-            while(qtis!=0)   //检测是否到白点
-            {qti();}
-            while(qtis!=15)  //检测是否到中心点
-            {qti();}
-            fastForward(15);
-            turn_back();
-            zzjiance();
-        break;  
-    case 4:                  //A点放置色块位黑色，且D点没有色块
-            turn_back();
-            zzjiance();
-            while(qtis!=15)  //检测是否到中心点
-            {qti();}
-            fastForward(15);
-            turn_left_45();
-            zzjiance();
-            while(qtis!=0)  //检测是否到白点
-            {qti();}
-            for(i=0;i<68;i++)       
-            {qti();}
-            back(20);
-            turn_back();
-            zzjiance();
-            while(qtis!=0)  //检测是否到白点
-            {qti();}
-            while(qtis!=15)  //检测是否到中心点
-            {qti();}
-            fastForward(15);
-            turn_left_45();
-            yzjiance();
-                for(i=0;i<20;i++) //向前循线移动一段距离      
-            {qti();}
-            turn_back();      //原地掉头对准直线
-            while(qtis!=15)  //检测是否到中心点
-            {qti();}
+    case 3://A点放置色块为红色
+        while(QTIState != 15)//检测是否到中心点
+            QTI(-1);
+        Forward(15); //补偿
+        turn_left_90();//屁股对着挡住路的色块
+        leftDetect();
+        while(QTIState != 0)//检测是否到白点
+            QTI(-1);
+        backServo(1);//后伺服夹住
+        turn_back();//要放的色块转向前
+        for(int i = 1; i <= 68; i++)//循线，将物块推至得分点       
+            QTI();
+        frontServo(0);//前伺服松开
+        back(20);//后退一段，将车身前面的叉子抽出，避免碰到色块  
+        //返回
+        while(QTIState != 0)//检测是否到白点
+            QTI(-1);
+        while(QTIState != 15)//检测是否到中心点
+            QTI(-1);
+        Forward(15);//盲走前进一小段，车身居中
+        buttOccupied = true;//屁股有色块
+        move(shuffled[3]);
         break;
-    case 5:                  //A点放置色块位紫色，且E点没有色块
-            turn_back();
-            zzjiance();
-            while(qtis!=15)  //检测是否到中心点
-            {qti();}
-            while(qtis!=0)  //检测是否到白点
-            {qti();}
-            for(i=0;i<68;i++)       
-            {qti();}
-            back(20);
-            turn_back();
-            zzjiance();
-            while(qtis!=0)  //检测是否到白点
-            {qti();}
-            while(qtis!=15)  //检测是否到中心点
-            {qti();}
-            fastForward(15);
-            turn_right_90();
-            yzjiance();
+    case 4://A点放置色块为黑色
+        while(QTIState != 15)//检测是否到中心点
+            QTI(-1);
+        Forward(15); //补偿
+        turn_left_45();//屁股对着挡住路的色块
+        leftDetect();
+        while(QTIState != 0)//检测是否到白点
+            QTI(-1);
+        backServo(1);//后伺服夹住
+        turn_back();//要放的色块转向前
+        for(int i = 1; i <= 68; i++)//循线，将物块推至得分点       
+            QTI();
+        frontServo(0);//前伺服松开
+        back(20);//后退一段，将车身前面的叉子抽出，避免碰到色块  
+        //返回
+        while(QTIState != 0)//检测是否到白点
+            QTI(-1);
+        while(QTIState != 15)//检测是否到中心点
+            QTI(-1);
+        Forward(15);//盲走前进一小段，车身居中
+        turn_left_45(); //向右旋转 45°
+        leftDetect();
+        buttOccupied = true;//屁股有色块
+        move(shuffled[4]);
+        break;
+    case 5://A点放置色块位紫色
+        while(QTIState != 0)//检测是否到白点
+            QTI(-1);
+        while(QTIState != 15)//检测是否到中心点
+            QTI(-1);
+        Back(7);//盲退一小段距离，QTI越过白圈
+        backServo(1);//后伺服夹住
+        turn_back();//要放的色块转向前
+        for(int i = 1; i <= 68; i++)//循线，将物块推至得分点       
+            QTI();
+        frontServo(0);//前伺服松开
+        Back(20);//后退一段，将车身前面的叉子抽出，避免碰到色块
+        //返回
+        while(QTIState != 0)//检测是否到白点
+            QTI(-1);
+        while(QTIState != 15)//检测是否到中心点
+            QTI(-1);
+        Forward(15);//盲走前进一小段，车身居中
+        turn_left_90();//右转90度
+        leftDetect();//右转检测函数，保证中间QTI至少有一个在直线上
+        delay(1000);
+        buttOccupied = true;//屁股有色块
+        move_B();
         break;
     case 6:                 //对应颜色物块路线上有物块放置，将A点色块搬运至起始直线上
             turn_back();
