@@ -319,23 +319,5 @@ void move_A(){
         buttOccupied = true;//屁股有色块
         move_B();
         break;
-    case 6:                 //对应颜色物块路线上有物块放置，将A点色块搬运至起始直线上
-            turn_back();
-            zzjiance();
-            while(qtis!=15)  //检测是否到中心点
-            {qti();}
-            fastForward(10); 
-            turn_right_90();
-            yzjiance();
-            for(i=0;i<80;i++)       
-            {qti();}
-            line++;
-            back(20);
-            turn_back();
-            zzjiance();
-            while(qtis!=15)  //检测是否到中心点
-            {qti();}
-            fastForward(10);
-        break;      
     }
  }
