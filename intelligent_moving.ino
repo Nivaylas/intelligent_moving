@@ -63,7 +63,7 @@ void QTI(int Reverse = 1){
                digitalRead(QTI2) * 4 +
                digitalRead(QTI3) * 2 +
                digitalRead(QTI4);//查询qti传感器状态
-    //Serial.println((int)QTIState)
+    Serial.println((int)QTIState)
     if(Reverse == 1)
         switch(QTIState){//选择qti传感器状态
         case 1:
