@@ -5,10 +5,8 @@
 #define LMOTOR 9
 #define RMOTOR 5
 
-const int TARGET = {0,
-1, 2, 3, 4, 5};
-int shuffled = {0,
-2, 4, 5, 1, 3};
+const int TARGET[5] = {0, 1, 2, 3, 4, 5};
+int shuffled[5] = {0, 2, 4, 5, 1, 3};
 
 int QTIState;
 
