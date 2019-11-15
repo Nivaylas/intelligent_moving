@@ -11,6 +11,7 @@ const int shuffled[6] = {0, 2, 4, 5, 1, 3};
 
 int QTIState;
 
+
 void test_speed();
 
 void Turn(int left, int right, int a){
@@ -71,7 +72,8 @@ void QTI(int Reverse = 1){
             /*
              * 为什么从这里开始turn函数只有两个参数了
              * 上面定义不是三个吗
-             *
+             * 我刷arduino的时候报错了
+             * 小老弟你怎么回事
              *
              *
              *
@@ -168,6 +170,22 @@ void setup(){
 }
 
 void loop(){
+    int status1 = digitalRead(TSPD1);  //光电门记录状态
+    int status2 = digitalRead(TSPD2);
+    int count1 = 0; //光电门计数
+    int count2 = 0;
+
+    int status_n1 = digitalRead(TSPD1);  //光电门即时状态
+    int status_n2 = digitalRead(TSPD2);
+
+    if (status1 != statusn_1){
+        status1 = status_n1;
+        count1++;
+    }
+    if (status2 != status_n2){
+        status2 = status_n2;
+        count2++;
+    }
     /*
     调试步骤：
     1：调零
@@ -335,13 +353,4 @@ void move_new(int goal){
     Forward(15);//盲走前进一小段，车身居中
     turn_left(45); //向右旋转 45°
     leftDetect();
-}
-
-
-void test_speed(){
-    int status1 = digitalRead(TSPD1);
-    int status2 = digitalRead(TSPD2);
-    int count1 = 0;
-    int count2 = 0;
-    
 }
