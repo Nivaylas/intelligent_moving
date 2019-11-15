@@ -1,14 +1,17 @@
-#define QTI1 12
-#define QTI2 11
-#define QTI3 6
-#define QTI4 10
-#define LMOTOR 9
-#define RMOTOR 5
+const int QTI1 = 12;
+const int QTI2 = 11;
+const int QTI3 = 6;
+const int QTI4 = 10;
+const int LMOTOR = 9;
+const int RMOTOR = 5;
+const int TSPD1 = 7;
+const int TSPD2 = 3;
 
-const int TARGET[5] = {0, 1, 2, 3, 4, 5};
-int shuffled[5] = {0, 2, 4, 5, 1, 3};
+const int shuffled[6] = {0, 2, 4, 5, 1, 3};
 
 int QTIState;
+
+void test_speed();
 
 void Turn(int left, int right, int a){
     for(int i = 1; i <= a; i++){
@@ -60,11 +63,22 @@ void QTI(int Reverse = 1){
                digitalRead(QTI2) * 4 +
                digitalRead(QTI3) * 2 +
                digitalRead(QTI4);//查询qti传感器状态
-    Serial.println((int)QTIState)
+    Serial.println((int)QTIState);
     if(Reverse == 1)
         switch(QTIState){//选择qti传感器状态
         case 1:
             Turn(1650, 1600);//向右转
+            /*
+             * 为什么从这里开始turn函数只有两个参数了
+             * 上面定义不是三个吗
+             *
+             *
+             *
+             *
+             *
+             *
+             *
+             */
             break;
         case 3:
             Turn(1510, 1550);//小幅向右转
@@ -148,6 +162,8 @@ void setup(){
     pinMode(QTI4, INPUT);
     pinMode(LMOTOR, OUTPUT);
     pinMode(RMOTOR, OUTPUT);
+    pinMode(TSPD1, INPUT);
+    pinMode(TSPD2, INPUT);
     Serial.begin(9600);
 }
 
@@ -319,4 +335,13 @@ void move_new(int goal){
     Forward(15);//盲走前进一小段，车身居中
     turn_left(45); //向右旋转 45°
     leftDetect();
+}
+
+
+void test_speed(){
+    int status1 = digitalRead(TSPD1);
+    int status2 = digitalRead(TSPD2);
+    int count1 = 0;
+    int count2 = 0;
+    
 }
