@@ -32,19 +32,16 @@ void Back(int a){
     Turn(1600, 1400, a);
 }
 
-void turn_right(int deg){
+void turn_degree(int deg){
     switch (deg){
-        case 90:
+        //right
+        case -90:
             Turn(1550, 1550, 55);//右转90°
         break;
-        case 45: 
+        case -45: 
             Turn(1550, 1550, 27);//右转45°
         break;
-    } 
-}
-
-void turn_left(int deg){
-    switch (deg){
+        //left
         case 90:
             Turn(1450, 1450, 55);//左转90°
         break;
@@ -174,8 +171,16 @@ void loop(){
     */
 }
 
-int first_turn = {0,
+int turn_list = {0,
 90, 45, 0, -45, -90}
+
+/*
+1-yellow
+2-white
+3-red
+4-black
+5-blue
+*/
 
 void move(int goal){
     turn_left(first_turn[goal]);//转向目标
@@ -265,24 +270,7 @@ void move(int goal){
         case 4://A点放置色块为黑色
             if(goal == 4)
                 break;
-            turn_left(45);//屁股对着挡住路的色块
-            leftDetect();
-            while(QTIState != 0)//检测是否到白点
-                QTI(-1);
-            backServo(1);//后伺服夹住
-            turn_left(180);//要放的色块转向前
-            for(int i = 1; i <= 68; i++)//循线，将物块推至得分点       
-                QTI();
-            frontServo(0);//前伺服松开
-            back(20);//后退一段，将车身前面的叉子抽出，避免碰到色块  
-            //返回
-            while(QTIState != 0)//检测是否到白点
-                QTI(-1);
-            while(QTIState != 15)//检测是否到中心点
-                QTI(-1);
-            Forward(15);//盲走前进一小段，车身居中
-            turn_left(45); //向右旋转 45°
-            leftDetect();
+            
             buttOccupied = true;//屁股有色块
             move(shuffled[4]);
             break;
@@ -310,3 +298,25 @@ void move(int goal){
             break;
     }
  }
+
+
+void move_new(int goal){
+    turn_left();//屁股对着挡住路的色块
+    leftDetect();
+    while(QTIState != 0)//检测是否到白点
+        QTI(-1);
+    backServo(1);//后伺服夹住
+    turn_left(180);//要放的色块转向前
+    for(int i = 1; i <= 68; i++)//循线，将物块推至得分点       
+        QTI();
+    frontServo(0);//前伺服松开
+    back(20);//后退一段，将车身前面的叉子抽出，避免碰到色块  
+    //返回
+    while(QTIState != 0)//检测是否到白点
+        QTI(-1);
+    while(QTIState != 15)//检测是否到中心点
+        QTI(-1);
+    Forward(15);//盲走前进一小段，车身居中
+    turn_left(45); //向右旋转 45°
+    leftDetect();
+}
