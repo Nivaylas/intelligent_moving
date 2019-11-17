@@ -2,8 +2,12 @@ const int QTI1 = 12;
 const int QTI2 = 11;
 const int QTI3 = 6;
 const int QTI4 = 10;
-const int LMOTOR = 9;
-const int RMOTOR = 5;
+
+const int BACKSERVO = 6;
+const int FRONTSERVO = 5;
+
+const int LMOTOR = 13;
+const int RMOTOR = 12;
 const int TSPD1 = 7;
 const int TSPD2 = 3;
 
@@ -13,6 +17,26 @@ int QTIState;
 
 
 void test_speed();
+
+void frontServo(bool Stat){
+    digitalWrite(FRONTSERVO, HIGH);
+    if(Stat)
+        delayMicroseconds(2500);//1-夹住
+    else
+        delayMicroseconds(1200);//0-松开
+    digitalWrite(FRONTSERVO, LOW);
+    delay(20);
+}
+
+void backServo(bool Stat){
+    digitalWrite(BACKSERVO, HIGH);
+    if(Stat)
+        delayMicroseconds(2500);//1-夹住
+    else
+        delayMicroseconds(1200);//0-松开
+    digitalWrite(BACKSERVO, LOW);
+    delay(20);
+}
 
 void Turn(int left, int right, int a = 2){
     for(int i = 1; i <= a; i++){
