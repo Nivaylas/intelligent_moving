@@ -171,13 +171,13 @@ void setup(){
 }
 
 void loop(){
-    int status1 = digitalRead(TSPD1);  //光电门记录状态
-    int status2 = digitalRead(TSPD2);
-    int count1 = 0; //光电门计数
-    int count2 = 0;
+    char status1 = digitalRead(TSPD1);  //光电门记录状态
+    char status2 = digitalRead(TSPD2);
+    long count1 = 0; //光电门计数
+    long count2 = 0;
 
-    int status_n1 = digitalRead(TSPD1);  //光电门即时状态
-    int status_n2 = digitalRead(TSPD2);
+    char status_n1 = digitalRead(TSPD1);  //光电门即时状态
+    char status_n2 = digitalRead(TSPD2);
 
     if (status1 != statusn_1){
         status1 = status_n1;
