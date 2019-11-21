@@ -11,7 +11,8 @@ const int RMOTOR = 12;
 const int TSPD1 = 7;
 const int TSPD2 = 3;
 
-const int shuffled[6] = {0, 2, 4, 5, 1, 3};
+const int shuffled[6] = {0,
+ 2, 4, 5, 1, 3};
 
 int QTIState;
 
@@ -182,6 +183,13 @@ void startToCenter(){
     Forward(10);//前进一点，补偿
 }
 
+void centerToStart(){
+    Back(60);
+    while (QTIState != 15)
+        QTI(-1);
+    Forward(10);//前进一点，补偿
+}
+
 void setup(){
     pinMode(QTI1, INPUT);
     pinMode(QTI2, INPUT);
@@ -217,6 +225,8 @@ void loop(){
     2：校正角度
     */
     startToCenter();
+    MOVE_main();
+    centerToStart();
     //move(1);
     /*delay(1000);
     move_B();
@@ -241,6 +251,39 @@ int turn_list = {0,
 5-blue
 */
 
+int toMoveList[6], pointer;
+int headO, backO;
+
+//主搬运函数
+void MOVE_main(){
+    pointer = 1;
+    for(int i = 1; i <= 5; i++)
+        if(shuffled[i] == i)
+            move_direct(i);
+        else{
+            toMoveList[pointer] = i;
+            pointer++;
+        }
+    //第一次
+    move(toMoveList[1]);
+    headO = shuffled[toMoveList[1]];
+    //第二到n-1次
+    for(int i = 2; i < pointer - 1; i++){
+        if(i % 2 == 0){
+            move_blocked_HO(shuffled[headO]);
+            backO = shuffled[shuffled[headO]];
+        }
+        else{
+            move_blocked_BO(shuffled[backO]);
+            headO = shuffled[shuffled[backO]];
+        }
+    }
+    if(i % 2 == 0)
+        moveHO_direct(shuffled[headO]);
+    else
+        moveBO_direct(shuffled[backO]);
+}
+
 //该点放置色块为该路径终点要放置的块
 void move_direct(int goal){
     turn_degree(first_turn[goal]);//转向目标
@@ -259,7 +302,45 @@ void move_direct(int goal){
         QTI(-1);
 }
 
-//case1：屁股无色块，有挡路色块
+void moveHO_direct(int goal){
+    turn_degree(first_turn[goal]);//转向目标
+    //Forward(8);//前进一点，补偿
+    while(QTIState != 0){//检测是否到白点
+        QTI();
+    }
+    Forward(7);//盲走一小段距离，QTI越过白圈
+    for(int i = 1; i <= 68; i++)//循线，将物块推至得分点       
+        QTI();
+    frontServo(0);//前伺服松开
+    Back(20);//后退一段，将车身前面的叉子抽出，避免碰到色块
+    //返回
+    while(QTIState != 0)//检测是否到白点
+        QTI(-1);
+    while(QTIState != 15)//检测是否到中心点
+        QTI(-1);
+    Forward(15);//补偿
+}
+
+void moveBO_direct(int goal){
+    turn_degree(turn_backward_list[goal]);//屁股对着挡住路的色块
+    //Forward(8);//前进一点，补偿
+    while(QTIState != 0){//检测是否到白点
+        QTI(-1);
+    }
+    Back(7);//盲退一小段距离，QTI越过白圈
+    for(int i = 1; i <= 68; i++)//循线，将物块推至得分点       
+        QTI(-1);
+    backServo(0);//后伺服松开
+    Forward(20);//后退一段，将车身前面的叉子抽出，避免碰到色块
+    //返回
+    while(QTIState != 0)//检测是否到白点
+        QTI(1);
+    while(QTIState != 15)//检测是否到中心点
+        QTI(1);
+    Forward(15);//补偿
+}
+
+//case1：屁股无色块
 void move(int start_loc){
     turn_degree(first_turn[start_loc]);//转向目标
     //Forward(8);//前进一点，补偿
@@ -272,7 +353,6 @@ void move(int start_loc){
         QTI(-1);
     Forward(15); //补偿
     turn_degree(-first_turn[start_loc]);//转向前方
-    move_blocked(shuffled[start_loc]);
 }
 
 int turn_backward_list = {0,
