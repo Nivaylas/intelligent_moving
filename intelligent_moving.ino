@@ -56,9 +56,28 @@ void Turn(int left, int right, int a = 2){
     }
 }
 
+void Forward(int a){
+    char status1 = digitalRead(TSPD1);  //光电门记录状态
+    char status2 = digitalRead(TSPD2);
+    long count1 = 0; //光电门计数
+    long count2 = 0;
+    
+    char status_n1 = digitalRead(TSPD1);  //光电门即时状态
+    char status_n2 = digitalRead(TSPD2);
+
+    if (status1 != status_n1){
+        status1 = status_n1;
+        count1++;
+    }
+    if (status2 != status_n2){
+        status2 = status_n2;
+        count2++;
+    }
+}
+
 //前进函数
 void Forward(int a){
-    Turn(1400, 1600, a); 
+    Turn(1400, 1600, a);
 }
 
 //后退函数
@@ -208,7 +227,8 @@ void setup(){
 }
 
 void loop(){
-    char status1 = digitalRead(TSPD1);  //光电门记录状态
+    
+    /*char status1 = digitalRead(TSPD1);  //光电门记录状态
     char status2 = digitalRead(TSPD2);
     long count1 = 0; //光电门计数
     long count2 = 0;
@@ -223,7 +243,7 @@ void loop(){
     if (status2 != status_n2){
         status2 = status_n2;
         count2++;
-    }
+    }*/
     /*
     调试步骤：
     1：调零
