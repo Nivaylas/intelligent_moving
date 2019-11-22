@@ -1,23 +1,28 @@
 const int QTI1 = 12;
 const int QTI2 = 11;
 const int QTI3 = 6;
-const int QTI4 = 10;
+const int QTI4 = 4;
 
-const int BACKSERVO = 6;
+const int BACKSERVO = 9;
 const int FRONTSERVO = 5;
 
 const int LMOTOR = 13;
-const int RMOTOR = 12;
+const int RMOTOR = 8;
 const int TSPD1 = 7;
 const int TSPD2 = 3;
 
 const int shuffled[6] = {0,
  2, 4, 5, 1, 3};
 
+int turn_backward_list[6] = {0, -90, -135, 180, 135, 90};
+
 int QTIState;
+void rightDetect();
+void leftDetect();
 
 
-void test_speed();
+//void test_speed();
+
 
 void frontServo(bool Stat){
     digitalWrite(FRONTSERVO, HIGH);
@@ -53,7 +58,7 @@ void Turn(int left, int right, int a = 2){
 
 //前进函数
 void Forward(int a){
-    Turn(1400, 1600, a);
+    Turn(1400, 1600, a); 
 }
 
 //后退函数
@@ -148,8 +153,8 @@ void QTI(int Reverse = 1){
 
 //检测中间两个QTI是否有在直线上
 bool Detect(){
-    QTIState = digitalRead(qti2) * 4 +
-               digitalRead(qti3) * 2;//查询qti传感器状态
+    QTIState = digitalRead(QTI2) * 4 +
+               digitalRead(QTI3) * 2;//查询qti传感器状态
     if(QTIState == 2 || QTIState == 4 || QTIState == 6)
         return false;
     else
@@ -167,7 +172,7 @@ void leftDetect(){
 }
 
 //右转检测函数，保证中间QTI至少有一个在直线上
-void rightDetect(void){
+void rightDetect(){
     int swch;
     swch = Detect();
     while(swch){
@@ -211,7 +216,7 @@ void loop(){
     char status_n1 = digitalRead(TSPD1);  //光电门即时状态
     char status_n2 = digitalRead(TSPD2);
 
-    if (status1 != statusn_1){
+    if (status1 != status_n1){
         status1 = status_n1;
         count1++;
     }
@@ -240,8 +245,7 @@ void loop(){
     */
 }
 
-int turn_list = {0,
-90, 45, 0, -45, -90}
+int first_turn[6] = {0, 90, 45, 0, -45, -90};
 
 /*
 1-yellow
@@ -253,6 +257,25 @@ int turn_list = {0,
 
 int toMoveList[6], pointer;
 int headO, backO;
+
+void move_blocked_HO(int goal){
+    turn_degree(turn_backward_list[goal]);//屁股对着挡住路的色块
+    while(QTIState != 0)//检测是否到白点
+        QTI(-1);
+    backServo(1);//后伺服夹住
+    turn_degree(180);//要放的色块转向前
+    for(int i = 1; i <= 68; i++)//循线，将物块推至得分点       
+        QTI();
+    frontServo(0);//前伺服松开
+    Back(20);//后退一段，将车身前面的叉子抽出，避免碰到色块  
+    //返回
+    while(QTIState != 0)//检测是否到白点
+        QTI(-1);
+    while(QTIState != 15)//检测是否到中心点
+        QTI(-1);
+    Forward(15);//盲走前进一小段，车身居中
+    turn_degree(-first_turn[goal]);//转向前方
+}
 
 //主搬运函数
 void MOVE_main(){
@@ -278,7 +301,7 @@ void MOVE_main(){
             headO = shuffled[shuffled[backO]];
         }
     }
-    if(i % 2 == 0)
+    if((pointer - 1) % 2 == 0)
         moveHO_direct(shuffled[headO]);
     else
         moveBO_direct(shuffled[backO]);
@@ -321,6 +344,7 @@ void moveHO_direct(int goal){
     Forward(15);//补偿
 }
 
+//屁股有色块，无挡路色块
 void moveBO_direct(int goal){
     turn_degree(turn_backward_list[goal]);//屁股对着挡住路的色块
     //Forward(8);//前进一点，补偿
@@ -355,28 +379,10 @@ void move(int start_loc){
     turn_degree(-first_turn[start_loc]);//转向前方
 }
 
-int turn_backward_list = {0,
--90, -135, 180, 135, 90}
+
 
 //case2：头部有色块，有挡路色块
-void move_blocked_HO(int goal){
-    turn_degree(turn_backward_list[goal]);//屁股对着挡住路的色块
-    while(QTIState != 0)//检测是否到白点
-        QTI(-1);
-    backServo(1);//后伺服夹住
-    turn_left(180);//要放的色块转向前
-    for(int i = 1; i <= 68; i++)//循线，将物块推至得分点       
-        QTI();
-    frontServo(0);//前伺服松开
-    back(20);//后退一段，将车身前面的叉子抽出，避免碰到色块  
-    //返回
-    while(QTIState != 0)//检测是否到白点
-        QTI(-1);
-    while(QTIState != 15)//检测是否到中心点
-        QTI(-1);
-    Forward(15);//盲走前进一小段，车身居中
-    turn_degree(-first_turn[goal]);//转向前方
-}
+
 
 //case3：屁股有色块，有挡路色块
 void move_blocked_BO(int goal){
@@ -384,7 +390,7 @@ void move_blocked_BO(int goal){
     while(QTIState != 0)//检测是否到白点
         QTI();
     frontServo(1);//前伺服夹住
-    turn_left(180);//要放的色块（屁股）转向前
+    turn_degree(180);//要放的色块（屁股）转向前
     for(int i = 1; i <= 68; i++)//循线，将物块推至得分点       
         QTI(-1);
     backServo(0);//前伺服松开
@@ -399,26 +405,10 @@ void move_blocked_BO(int goal){
     turn_degree(-turn_backward_list[goal]);//转向前方
 }
 
-//case4：屁股有色块，无挡路色块
-void move_direct(int goal){
-    turn_degree(turn_backward_list[goal]);//屁股对着挡住路的色块
-    //Forward(8);//前进一点，补偿
-    while(QTIState != 0){//检测是否到白点
-        QTI(-1);
-    }
-    Back(7);//盲走一小段距离，QTI越过白圈
-    for(int i = 1; i <= 68; i++)//循线，将物块推至得分点       
-        QTI(-1);
-    Forward(20);//前进一段，将车身后面的叉子抽出，避免碰到色块
-
-    //返回
-    while(QTIState != 0)//检测是否到白点
-        QTI();
-    while(QTIState != 15)//检测是否到中心点
-        QTI();
-    Forward(15);//盲走前进一小段，车身居中
-    turn_degree(-turn_backward_list[goal]);//转向前方
-}
 
 //case5：头部有色块，无挡路色块
 //即move_direct();
+
+
+
+ 
