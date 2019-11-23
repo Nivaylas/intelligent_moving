@@ -237,8 +237,8 @@ void setup(){
     pinMode(RMOTOR, OUTPUT);
     pinMode(BACKSERVO, OUTPUT);
     pinMode(FRONTSERVO, OUTPUT);
-    pinMode(TSPD1, INPUT);
-    pinMode(TSPD2, INPUT);
+    pinMode(TSPDL, INPUT);
+    pinMode(TSPDR, INPUT);
     Serial.begin(9600);
 }
 
