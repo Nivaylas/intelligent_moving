@@ -30,23 +30,28 @@ void leftDetect();
 
 
 void frontServo(bool Stat){
-    digitalWrite(FRONTSERVO, HIGH);
-    if(Stat)
-        delayMicroseconds(1000);//1-夹住
-    else
-        delayMicroseconds(2000);//0-松开
-    digitalWrite(FRONTSERVO, LOW);
-    delay(20);
+    for(int i = 1; i <= 10; i++){
+        digitalWrite(FRONTSERVO, HIGH);
+        if(Stat)
+            delayMicroseconds(1000);//1-夹住
+        else
+            delayMicroseconds(2000);//0-松开
+        digitalWrite(FRONTSERVO, LOW);
+        delay(20);
+    }
+    
 }
 
 void backServo(bool Stat){
-    digitalWrite(BACKSERVO, HIGH);
-    if(Stat)
-        delayMicroseconds(1000);//1-夹住
-    else
-        delayMicroseconds(2000);//0-松开
-    digitalWrite(BACKSERVO, LOW);
-    delay(20);
+    for(int i = 1; i <= 10; i++){
+        digitalWrite(BACKSERVO, HIGH);
+        if(Stat)
+            delayMicroseconds(1000);//1-夹住
+        else
+            delayMicroseconds(2000);//0-松开
+        digitalWrite(BACKSERVO, LOW);
+        delay(20);
+    }
 }
 
 void Turn(int left, int right, int a = 2){
@@ -61,9 +66,10 @@ void Turn(int left, int right, int a = 2){
     }
 }
 
+int countMAX;
 
-void Forward_mm(int a){
-    ountMAX = a / 11;
+void Turn_mm(int left, int right, int a){
+    countMAX = a / 11;
     while((countL >= countMAX) && (countR >= countMAX)){
         char status_nR = digitalRead(TSPDR);//光电门即时状态
         char status_nL = digitalRead(TSPDL);
@@ -77,7 +83,7 @@ void Forward_mm(int a){
         }
         if(countL < countMAX){
             digitalWrite(LMOTOR, HIGH);
-            delayMicroseconds(1800);
+            delayMicroseconds(1200);
             digitalWrite(LMOTOR, LOW);        
         }
         if(countR < countMAX){
@@ -151,7 +157,7 @@ void QTI(int Reverse = 1){
         case 1:
             Turn(1650, 1600);//微向右转
             break;
-        case 3:
+        case 3:QQ       
             Turn(1510, 1550);//微小幅向右转
             break;
         case 8:
@@ -263,6 +269,7 @@ void loop(){
     1：调零
     2：校正角度
     */
+    delay(2000);
     frontServo(0);
     backServo(0);
     startToCenter();
@@ -444,5 +451,3 @@ void move_blocked_BO(int goal){
 
 //case5：头部有色块，无挡路色块
 //即move_direct();
-
-
