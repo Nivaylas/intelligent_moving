@@ -8,8 +8,8 @@ const int FRONTSERVO = 5;
 
 const int LMOTOR = 10;
 const int RMOTOR = 8;
-const int TSPD1 = 7;
-const int TSPD2 = 3;
+const int TSPDL = 3;
+const int TSPDR = 7;
 
 const int shuffled[6] = {0,
  2, 4, 5, 1, 3};
@@ -27,9 +27,9 @@ void leftDetect();
 void frontServo(bool Stat){
     digitalWrite(FRONTSERVO, HIGH);
     if(Stat)
-        delayMicroseconds(2500);//1-夹住
+        delayMicroseconds(1000);//1-夹住
     else
-        delayMicroseconds(1200);//0-松开
+        delayMicroseconds(2000);//0-松开
     digitalWrite(FRONTSERVO, LOW);
     delay(20);
 }
@@ -37,9 +37,9 @@ void frontServo(bool Stat){
 void backServo(bool Stat){
     digitalWrite(BACKSERVO, HIGH);
     if(Stat)
-        delayMicroseconds(2500);//1-夹住
+        delayMicroseconds(1000);//1-夹住
     else
-        delayMicroseconds(1200);//0-松开
+        delayMicroseconds(2000);//0-松开
     digitalWrite(BACKSERVO, LOW);
     delay(20);
 }
@@ -56,23 +56,37 @@ void Turn(int left, int right, int a = 2){
     }
 }
 
-void Forward(int a){
-    char status1 = digitalRead(TSPD1);  //光电门记录状态
-    char status2 = digitalRead(TSPD2);
-    long count1 = 0; //光电门计数
-    long count2 = 0;
-    
-    char status_n1 = digitalRead(TSPD1);  //光电门即时状态
-    char status_n2 = digitalRead(TSPD2);
+long countL = 0; //光电门计数
+long countR = 0;
 
-    if (status1 != status_n1){
-        status1 = status_n1;
-        count1++;
+void Forward_mm(int a){
+    ountMAX = a / 11;
+    while((countL >= countMAX) && (countR >= countMAX)){
+        char status1 = digitalRead(TSPD1);//光电门记录状态
+        char status2 = digitalRead(TSPD2);
+        char status_n1 = digitalRead(TSPD1);//光电门即时状态
+        char status_n2 = digitalRead(TSPD2);
+        if (status1 != status_n1){
+            status1 = status_n1;
+            countL++;
+        }
+        if (status2 != status_n2){
+            status2 = status_n2;
+            countR++;
+        }
+        if(countL < countMAX){
+            digitalWrite(LMOTOR, HIGH);
+            delayMicroseconds(1800);
+            digitalWrite(LMOTOR, LOW);        
+        }
+        if(countR < countMAX){
+            digitalWrite(RMOTOR, HIGH);
+            delayMicroseconds(1800);
+            digitalWrite(RMOTOR, LOW);        
+        }
     }
-    if (status2 != status_n2){
-        status2 = status_n2;
-        count2++;
-    }
+    c
+    
 }
 
 //前进函数
@@ -221,6 +235,8 @@ void setup(){
     pinMode(QTI4, INPUT);
     pinMode(LMOTOR, OUTPUT);
     pinMode(RMOTOR, OUTPUT);
+    pinMode(BACKSERVO, OUTPUT);
+    pinMode(FRONTSERVO, OUTPUT);
     pinMode(TSPD1, INPUT);
     pinMode(TSPD2, INPUT);
     Serial.begin(9600);
@@ -232,10 +248,8 @@ void loop(){
     char status2 = digitalRead(TSPD2);
     long count1 = 0; //光电门计数
     long count2 = 0;
-
     char status_n1 = digitalRead(TSPD1);  //光电门即时状态
     char status_n2 = digitalRead(TSPD2);
-
     if (status1 != status_n1){
         status1 = status_n1;
         count1++;
@@ -430,5 +444,3 @@ void move_blocked_BO(int goal){
 //即move_direct();
 
 
-
- 
