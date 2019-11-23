@@ -11,6 +11,11 @@ const int RMOTOR = 8;
 const int TSPDL = 3;
 const int TSPDR = 7;
 
+char statusR = digitalRead(TSPDR);  //光电门记录状态
+char statusL = digitalRead(TSPDL);
+long countR = 0; //光电门计数
+long countL = 0;
+
 const int shuffled[6] = {0,
  2, 4, 5, 1, 3};
 
@@ -56,23 +61,19 @@ void Turn(int left, int right, int a = 2){
     }
 }
 
-long countL = 0; //光电门计数
-long countR = 0;
 
 void Forward_mm(int a){
     ountMAX = a / 11;
     while((countL >= countMAX) && (countR >= countMAX)){
-        char status1 = digitalRead(TSPD1);//光电门记录状态
-        char status2 = digitalRead(TSPD2);
-        char status_n1 = digitalRead(TSPD1);//光电门即时状态
-        char status_n2 = digitalRead(TSPD2);
-        if (status1 != status_n1){
-            status1 = status_n1;
-            countL++;
-        }
-        if (status2 != status_n2){
-            status2 = status_n2;
+        char status_nR = digitalRead(TSPDR);//光电门即时状态
+        char status_nL = digitalRead(TSPDL);
+        if (statusR != status_nR){
+            statusR = status_nR;
             countR++;
+        }
+        if (statusL != status_nL){
+            statusL = status_nL;
+            countL++;
         }
         if(countL < countMAX){
             digitalWrite(LMOTOR, HIGH);
