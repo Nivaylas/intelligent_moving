@@ -6,7 +6,7 @@ const int QTI4 = 4;
 const int BACKSERVO = 9;
 const int FRONTSERVO = 5;
 
-const int LMOTOR = 13;
+const int LMOTOR = 10;
 const int RMOTOR = 8;
 const int TSPD1 = 7;
 const int TSPD2 = 3;
