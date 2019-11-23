@@ -86,7 +86,6 @@ void Forward_mm(int a){
             digitalWrite(RMOTOR, LOW);        
         }
     }
-    c
     
 }
 
