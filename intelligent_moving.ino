@@ -263,6 +263,8 @@ void loop(){
     1：调零
     2：校正角度
     */
+    frontServo(0);
+    backServo(0);
     startToCenter();
     MOVE_main();
     centerToStart();
